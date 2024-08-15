@@ -5,8 +5,6 @@ import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/utils/cryptography/EIP712Upgradeable.sol";
 import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
-//test
-import "hardhat/console.sol";
 
 struct SigninParams {
     uint64 time;
@@ -81,7 +79,6 @@ contract MintForestV1 is
     ) {
         bytes32 _digest = _hashTypedDataV4(keccak256(encodeData));
         address _signer = ECDSA.recover(_digest, signature);
-        console.log("signer---", signer, _signer, 1);
         if (_signer != signer) revert InvalidSignature();
         _;
     }
