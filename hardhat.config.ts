@@ -20,22 +20,46 @@ const config: HardhatUserConfig = {
   networks: {
     localhost: {
       url: "http://127.0.0.1:8545",
-      accounts: process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
+      accounts:
+        process.env.LOCAL_PRIVATE_KEY !== undefined
+          ? [process.env.LOCAL_PRIVATE_KEY]
+          : [],
     },
-    mainnet: {
+    "mint-mainnet": {
       url: "https://eth-mainnet.g.alchemy.com/v2/fHK0-Z9Y65IMkYub9iA_qBBp-DzMFM1O",
-      accounts: process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
+      accounts:
+        process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
     },
-    sepolia: {
-      url: "https://eth-sepolia.g.alchemy.com/v2/1jrDuEnaS36cBF10eYyB8c-YNIaYb02x",
-      accounts: process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
+    "mint-sepolia": {
+      url: "https://sepolia-testnet-rpc.mintchain.io",
+      accounts:
+        process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
     },
   },
   etherscan: {
     apiKey: {
-      mainnet: process.env.ETHERSCAN_API_KEY as string,
-      sepolia: process.env.ETHERSCAN_API_KEY as string,
+      "mint-mainnet": "mainnet",
+      "mint-sepolia": "testnet",
     },
+    customChains: [
+      {
+        network: "mint-mainnet",
+        chainId: 185,
+        urls: {
+          apiURL:
+            "https://api.routescan.io/v2/network/mainnet/evm/185/etherscan",
+          browserURL: "https://mintscan.org",
+        },
+      },
+      {
+        network: "mint-sepolia",
+        chainId: 1687,
+        urls: {
+          apiURL: "https://sepolia-testnet-explorer.mintchain.io//api",
+          browserURL: "https://sepolia-testnet-explorer.mintchain.io/",
+        },
+      },
+    ],
   },
 };
 

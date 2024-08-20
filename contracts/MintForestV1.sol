@@ -33,7 +33,7 @@ contract MintForestV1 is
     UUPSUpgradeable,
     EIP712Upgradeable
 {
-    string private constant SIGNING_DOMAIN = "www.mintchain.io";
+    string private constant SIGNING_DOMAIN = "MintForest";
     string private constant SIGNATURE_VERSION = "1";
     address public signer;
 
@@ -65,11 +65,19 @@ contract MintForestV1 is
     error InvalidTime();
     error DuplicateData();
     error InvalidSignature();
+    error InvalidPoint();
 
     modifier onlyToday(uint64 _time) {
         uint64 currentTimestamp = uint64(block.timestamp);
         uint64 startOfDay = currentTimestamp - (currentTimestamp % 86400);
         if (_time != startOfDay) revert InvalidTime();
+        _;
+    }
+
+    modifier checkValue(uint256 _value) {
+        if (_value <= 0) {
+            revert InvalidPoint();
+        }
         _;
     }
 
@@ -109,6 +117,7 @@ contract MintForestV1 is
     )
         external
         onlyToday(params.time)
+        checkValue(params.point)
         validateSignature(
             abi.encode(
                 keccak256(
@@ -132,6 +141,7 @@ contract MintForestV1 is
     )
         external
         onlyToday(params.time)
+        checkValue(params.point)
         validateSignature(
             abi.encode(
                 keccak256(
@@ -155,6 +165,7 @@ contract MintForestV1 is
         bytes calldata signature
     )
         external
+        checkValue(params.point)
         validateSignature(
             abi.encode(
                 keccak256(
@@ -178,6 +189,8 @@ contract MintForestV1 is
         bytes calldata signature
     )
         external
+        onlyToday(params.time)
+        checkValue(params.point)
         validateSignature(
             abi.encode(
                 keccak256(
