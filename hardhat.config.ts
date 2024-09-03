@@ -16,7 +16,7 @@ const config: HardhatUserConfig = {
   paths: {
     sources: "contracts",
   },
-  defaultNetwork: "localhost",
+  defaultNetwork: "mint-mainnet",
   networks: {
     localhost: {
       url: "http://127.0.0.1:8545",
@@ -26,7 +26,7 @@ const config: HardhatUserConfig = {
           : [],
     },
     "mint-mainnet": {
-      url: "https://eth-mainnet.g.alchemy.com/v2/fHK0-Z9Y65IMkYub9iA_qBBp-DzMFM1O",
+      url: "https://rpc.mintchain.io",
       accounts:
         process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
     },
@@ -46,8 +46,7 @@ const config: HardhatUserConfig = {
         network: "mint-mainnet",
         chainId: 185,
         urls: {
-          apiURL:
-            "https://api.routescan.io/v2/network/mainnet/evm/185/etherscan",
+          apiURL: "https://explorer.mintchain.io/api",
           browserURL: "https://mintscan.org",
         },
       },
@@ -55,7 +54,7 @@ const config: HardhatUserConfig = {
         network: "mint-sepolia",
         chainId: 1687,
         urls: {
-          apiURL: "https://sepolia-testnet-explorer.mintchain.io//api",
+          apiURL: "https://sepolia-testnet-explorer.mintchain.io/api",
           browserURL: "https://sepolia-testnet-explorer.mintchain.io/",
         },
       },
