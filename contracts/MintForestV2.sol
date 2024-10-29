@@ -28,7 +28,12 @@ struct TurntableParams {
     uint256 point;
 }
 
-contract MintForestV1 is
+struct InviteParams {
+    uint64 time;
+    uint256 point;
+}
+
+contract MintForestV2 is
     OwnableUpgradeable,
     UUPSUpgradeable,
     EIP712Upgradeable
@@ -42,6 +47,7 @@ contract MintForestV1 is
     mapping(address => mapping(uint256 => uint256)) public rewardRecord;
     mapping(address => mapping(uint64 => mapping(uint16 => uint256)))
         public turntableRecord;
+    mapping(address => mapping(uint256 => uint256)) public inviteRecord;
 
     event Signin(address indexed user, uint64 indexed time, uint256 point);
     event Steal(
@@ -61,6 +67,7 @@ contract MintForestV1 is
         uint16 indexed count,
         uint256 point
     );
+    event InviteClaim(address indexed user, uint64 indexed time, uint256 point);
 
     error InvalidTime();
     error DuplicateData();
@@ -208,5 +215,29 @@ contract MintForestV1 is
             revert DuplicateData();
         turntableRecord[_msgSender()][params.time][params.count] = params.point;
         emit Turntable(_msgSender(), params.time, params.count, params.point);
+    }
+
+    function inviteClaim(
+        InviteParams calldata params,
+        bytes calldata signature
+    )
+        external
+        onlyToday(params.time)
+        checkValue(params.point)
+        validateSignature(
+            abi.encode(
+                keccak256(
+                    "InviteParams(address user,uint64 time,uint256 point)"
+                ),
+                _msgSender(),
+                params.time,
+                params.point
+            ),
+            signature
+        )
+    {
+        if (inviteRecord[_msgSender()][params.time] > 0) revert DuplicateData();
+        inviteRecord[_msgSender()][params.time] = params.point;
+        emit InviteClaim(_msgSender(), params.time, params.point);
     }
 }

@@ -6,7 +6,7 @@ function delay(s: number) {
   });
 }
 
-const PROXY = "";
+const PROXY = "0x12906892AaA384ad59F2c431867af6632c68100a";
 const IMPLEMENT = "";
 
 async function main() {
@@ -14,9 +14,9 @@ async function main() {
   console.log("Deployer address: " + deployer.address);
   await delay(3);
   console.log("Deploying.....");
-  const contract = await ethers.getContractFactory("MintForestV1", deployer);
-  const contractDeployed: any = await contract.attach(PROXY);
-  console.log(await contractDeployed.stake([132]));
+  const contract = await ethers.getContractFactory("MintForestV2", deployer);
+  await upgrades.upgradeProxy(PROXY, contract);
+  console.log("Upgrade successful.....");
 }
 
 // We recommend this pattern to be able to use async/await everywhere
